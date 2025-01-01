@@ -12,22 +12,26 @@ internal class Program
         MenuHandler menuHandler = new MenuHandler();
         Validation validation = new Validation();
         DrinksControllers drinksControllers = new DrinksControllers(validation);
+
         var categories = await drinksService.GetDrinksCategoriesAsync();
         menuHandler.ShowCategoryMenu(categories);
-        // // Check if categories were returned
-        // if (categories.Any())
-        // {
-        //     foreach (var category in categories)
-        //     {
-        //         Console.WriteLine(category.Name);
-        //     }
-        // }
-        // else
-        // {
-        //     Console.WriteLine("No categories found.");
-        // }
 
+        string? drinkCategorySelected = drinksControllers.GetCategory();
+
+        // validate string
+
+
+        // loop through categories and match it to users selected category
+        foreach (var category in categories)
+        {
+            if (category?.Name?.ToLower() == drinkCategorySelected)
+            {
+                Console.WriteLine($"{category?.Name} = {drinkCategorySelected}");
+            }
+        }
 
     }
+
+    internal void
 }
 
