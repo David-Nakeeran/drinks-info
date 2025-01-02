@@ -1,6 +1,7 @@
 ﻿using DrinksInfo.Utilities;
 using DrinksInfo.Controllers;
 using DrinksInfo.Views;
+using System.Globalization;
 
 namespace DrinksInfo;
 
@@ -12,26 +13,28 @@ internal class Program
         MenuHandler menuHandler = new MenuHandler();
         Validation validation = new Validation();
         DrinksControllers drinksControllers = new DrinksControllers(validation);
+        FindMatching findMatching = new FindMatching();
 
+        // Get list from API
         var categories = await drinksService.GetDrinksCategoriesAsync();
+        // Show list to user
         menuHandler.ShowCategoryMenu(categories);
-
+        // Get users input and validate
         string? drinkCategorySelected = drinksControllers.GetCategory();
 
-        // validate string
-
-
-        // loop through categories and match it to users selected category
-        foreach (var category in categories)
+        bool isCategoryMatch = findMatching.FindMatchingCategory(categories, drinkCategorySelected);
+        if (isCategoryMatch)
         {
-            if (category?.Name?.ToLower() == drinkCategorySelected)
-            {
-                Console.WriteLine($"{category?.Name} = {drinkCategorySelected}");
-            }
+            TextInfo textInfo = new CultureInfo("en-GB", false).TextInfo;
+
+            if (drinkCategorySelected == null) return;
+            string? drink = textInfo.ToTitleCase(drinkCategorySelected);
+            var drinks = await drinksService.GetDrinksAsync(drink);
+
+            menuHandler.ShowDrinksMenu(drinks);
         }
 
-    }
 
-    internal void
+    }
 }
 
