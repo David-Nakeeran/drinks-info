@@ -51,4 +51,25 @@ class DrinksService
             return new List<Category>();
         }
     }
+
+    internal async Task<List<Drink>> GetDrinksAsync(string? category)
+    {
+        try
+        {
+            var requestUri = $"filter.php?c={category}";
+
+            await using Stream stream =
+                await _httpClient.GetStreamAsync(requestUri);
+
+            var drinks =
+                await JsonSerializer.DeserializeAsync<Drinks>(stream);
+
+            return drinks?.DrinkList ?? new List<Drink>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            return new List<Drink>();
+        }
+    }
 }
