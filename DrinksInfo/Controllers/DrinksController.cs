@@ -17,6 +17,6 @@ class DrinksControllers
     {
         var input = AnsiConsole.Ask<string>("Please enter the category of drinks you'd like to see");
         var inputValid = _validation.ValidateString("Please try again, enter the category of drinks you'd like to see", input);
-        return inputValid?.ToLower().Trim();
+        return inputValid;
     }
 }
