@@ -17,7 +17,7 @@ class Validation
     {
         foreach (char c in input)
         {
-            if (!Char.IsLetter(c) && c != '/') return false;
+            if (!Char.IsLetter(c) && c != '/' && c != ' ') return false;
         }
         return true;
     }
@@ -29,7 +29,7 @@ class Validation
         {
             AnsiConsole.WriteLine("Invalid category, please press any key to continue.....");
             Console.ReadKey(true);
-            AnsiConsole.WriteLine("Please try again");
+            input = AnsiConsole.Ask<string>(message);
             input = CheckInputNullOrWhitespace(message, input);
         }
         return input;

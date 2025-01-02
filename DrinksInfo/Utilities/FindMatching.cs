@@ -10,12 +10,9 @@ internal class FindMatching()
         {
             if (category.Name?.ToLower() == drinkCategorySelected?.ToLower().Trim())
             {
-                Console.WriteLine($"{category.Name?.ToLower()} and {drinkCategorySelected?.ToLower().Trim()}");
                 return true;
             }
-
         }
         return false;
     }
-
 }
