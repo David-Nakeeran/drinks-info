@@ -17,9 +17,28 @@ class Validation
     {
         foreach (char c in input)
         {
-            if (!Char.IsLetter(c) && c != '/' && c != ' ') return false;
+            if (!Char.IsLetter(c) && c != '/' && c != ' ' && c != '0') return false;
         }
         return true;
+    }
+
+    internal bool IsIdValid(string? input)
+    {
+        if (int.TryParse(input, out _)) return true;
+        return false;
+    }
+
+    internal string? ValidateDrinkId(string message, string input)
+    {
+        input = CheckInputNullOrWhitespace(message, input);
+        while (!IsIdValid(input))
+        {
+            AnsiConsole.WriteLine("Invalid drink id, please press any key to continue.....");
+            Console.ReadKey(true);
+            input = AnsiConsole.Ask<string>(message);
+            input = CheckInputNullOrWhitespace(message, input);
+        }
+        return input;
     }
 
     internal string? ValidateString(string message, string input)
