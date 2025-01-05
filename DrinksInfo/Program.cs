@@ -1,7 +1,8 @@
-﻿using DrinksInfo.Utilities;
-using DrinksInfo.Controllers;
+﻿using DrinksInfo.Controllers;
+using DrinksInfo.Coordinators;
+using DrinksInfo.Utilities;
 using DrinksInfo.Views;
-using System.Globalization;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DrinksInfo;
 
@@ -9,31 +10,19 @@ internal class Program
 {
     static async Task Main(string[] args)
     {
-        DrinksService drinksService = new DrinksService();
-        MenuHandler menuHandler = new MenuHandler();
-        Validation validation = new Validation();
-        DrinksControllers drinksControllers = new DrinksControllers(validation);
-        FindMatching findMatching = new FindMatching();
+        var services = new ServiceCollection();
 
-        // Get list from API
-        var categories = await drinksService.GetDrinksCategoriesAsync();
-        // Show list to user
-        menuHandler.ShowCategoryMenu(categories);
-        // Get users input and validate
-        string? drinkCategorySelected = drinksControllers.GetCategory();
+        services.AddSingleton<MenuHandler>();
+        services.AddSingleton<DrinksControllers>();
+        services.AddSingleton<DrinksService>();
+        services.AddSingleton<FindMatching>();
+        services.AddSingleton<GetObjectPropertyValues>();
+        services.AddSingleton<Validation>();
+        services.AddSingleton<AppCoordinator>();
 
-        bool isCategoryMatch = findMatching.FindMatchingCategory(categories, drinkCategorySelected);
-        if (isCategoryMatch)
-        {
-            TextInfo textInfo = new CultureInfo("en-GB", false).TextInfo;
+        var serviceProvider = services.BuildServiceProvider();
 
-            if (drinkCategorySelected == null) return;
-            string? drink = textInfo.ToTitleCase(drinkCategorySelected);
-            var drinks = await drinksService.GetDrinksAsync(drink);
-
-            menuHandler.ShowDrinksMenu(drinks);
-        }
-
+        await serviceProvider.GetRequiredService<AppCoordinator>().Start();
 
     }
 }
