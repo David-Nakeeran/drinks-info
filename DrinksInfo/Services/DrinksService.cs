@@ -2,7 +2,6 @@ using DrinksInfo.Models;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
-
 namespace DrinksInfo;
 
 class DrinksService
@@ -70,6 +69,27 @@ class DrinksService
         {
             Console.WriteLine($"Error: {ex.Message}");
             return new List<Drink>();
+        }
+    }
+
+    internal async Task<List<DrinkDetail>> GetDrinkDetailAsync(string? drink)
+    {
+        try
+        {
+            var requestUri = $"lookup.php?i={drink}";
+
+            await using Stream stream =
+                await _httpClient.GetStreamAsync(requestUri);
+
+            var drinks =
+                await JsonSerializer.DeserializeAsync<DrinksDetails>(stream);
+
+            return drinks?.DrinkDetailList ?? new List<DrinkDetail>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            return new List<DrinkDetail>();
         }
     }
 }
