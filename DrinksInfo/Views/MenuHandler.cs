@@ -10,7 +10,6 @@ class MenuHandler
         var table = new Table();
         table.AddColumn("Categories Menu");
 
-        // loop through add the rows
         foreach (var category in categories)
         {
             if (category.Name == null)
@@ -28,20 +27,40 @@ class MenuHandler
 
     internal void ShowDrinksMenu(List<Drink> drinks)
     {
+        Console.Clear();
         var table = new Table();
-        table.AddColumn("Categories Menu");
+        table.AddColumns("Drink Id", "Drink Name");
 
-        // loop through add the rows
         foreach (var drink in drinks)
         {
-            if (drink.Name == null)
+            if (drink.Name == null || drink.DrinkId == null)
             {
                 AnsiConsole.WriteLine("No categories");
                 return;
             }
             else
             {
-                table.AddRow(drink.Name);
+                table.AddRow(drink.DrinkId, drink.Name);
+            }
+        }
+        AnsiConsole.Write(table);
+    }
+
+    internal void ShowDrinkDetailMenu(Dictionary<string, string> drinkDetail)
+    {
+        Console.Clear();
+        var table = new Table();
+        table.AddColumns("Name", "Details");
+
+        foreach (var drink in drinkDetail)
+        {
+            if (drink.Value == "null")
+            {
+                continue;
+            }
+            else
+            {
+                table.AddRow(drink.Key, drink.Value);
             }
         }
         AnsiConsole.Write(table);
